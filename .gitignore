@@ -1,0 +1,14 @@
+node_modules
+bower_components
+include
+logs/*
+vendor
+public
+!.keep
+package
+*.tgz
+npm-debug.log
+dump.rdb
+.DS_STORE
+.tmp
+.secrets

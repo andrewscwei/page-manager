@@ -1,0 +1,9 @@
+machine:
+  node:
+    version: 6.1.0
+deployment:
+  release:
+    tag: /release-.*/
+    commands:
+      - chmod +x ./scripts/release.sh
+      - ./scripts/release.sh

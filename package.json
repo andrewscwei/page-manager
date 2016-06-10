@@ -1,0 +1,27 @@
+{
+  "name": "page-manager",
+  "version": "0.1.0",
+  "description": "Front-end page routing/transitioning/loading manager based on PageJS",
+  "main": "lib/PageManager.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VARIANTE/page-manager.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "lib"
+  ],
+  "engines": {
+    "node": ">=6.1.0",
+    "npm": ">=3.8.6"
+  },
+  "author": "Andrew Wei",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.13.1",
+    "page": "^1.7.1",
+    "superagent": "^2.0.0"
+  }
+}
