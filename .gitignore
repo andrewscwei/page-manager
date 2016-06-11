@@ -4,6 +4,7 @@ include
 logs/*
 vendor
 public
+lib
 !.keep
 package
 *.tgz
