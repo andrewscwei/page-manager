@@ -1,4 +1,4 @@
-// (c) VARIANTE
+// (c) Andrew Wei
 
 'use strict';
 
