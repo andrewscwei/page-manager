@@ -6,7 +6,7 @@ dependencies:
     - npm run build
 deployment:
   release:
-    tag: /release-.*/
+    tag: /^v(\d+\.)?(\d+\.)?(\*|\d+)$/
     commands:
       - chmod +x ./scripts/release.sh
       - ./scripts/release.sh
