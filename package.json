@@ -1,6 +1,6 @@
 {
   "name": "page-manager",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Front-end page routing/transitioning/loading manager based on PageJS",
   "main": "lib/PageManager.js",
   "repository": {

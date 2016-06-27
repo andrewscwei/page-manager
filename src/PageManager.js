@@ -267,8 +267,11 @@ class PageManager {
     if (PageManager.autoRouting) {
       // Track page history.
       page('/*', (ctx, next) => {
-        this.history.push(ctx.path);
-        next();
+        // Only handle page change if it's different.
+        if (!this.history.length || (ctx.path !== this.history[this.history.length-1])) {
+          this.history.push(ctx.path);
+          next();
+        }
       });
 
       // Initiate transition out.
