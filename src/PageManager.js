@@ -27,6 +27,15 @@ class PageManager {
   }
 
   /**
+   * PageJS instance.
+   *
+   * @type {PageJS}
+   */
+  static get router() {
+    return page;
+  }
+
+  /**
    * ID of the target element where non-root pages will be loaded into.
    *
    * @type {string}
