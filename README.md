@@ -10,6 +10,11 @@ import pm from 'page-manager';
 pm.locales = ['en', 'fr'];
 pm.autoRouting = true;
 
+pm.request((newDocument, oldDocument, next) => {
+  // Do something to new/old document elements when new request is made.
+  next();  
+});
+
 pm.transition('in', (next) => {
   // Transition-in behavior for all paths.
   next();
@@ -111,7 +116,7 @@ Param: `fromPath` - The path which the page is transitioning from.
 Param: `toPath` - The path which the page is transitioning into.
 Param: `handler` - The async function invoked during the transition. A callback is automatically passed into this handler, which should be called manually to notify that transition is complete.
 
-`fromPath` and `toPath` are optional, where both are defaulted to `/*`. When only 3 arguments are passed into this function, the second argument is `fromPath` for an `out` transition and `toPath` for an `in` transition.
+`fromPath` and `toPath` are optional, which both are defaulted to `/*`. When only 3 arguments are passed into this function, the second argument is `fromPath` for an `out` transition and `toPath` for an `in` transition.
 
 Example:
 ```js

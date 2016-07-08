@@ -91,6 +91,12 @@ class PageManager {
   /** @see PageManager#defineRoute */
   static route() { PageManager.sharedInstance.defineRoute.apply(PageManager.sharedInstance, arguments); }
 
+  /** @see PageManager#defineRequest */
+  static request() {
+    let args = Array.prototype.slice.call(arguments, 0);
+    PageManager.sharedInstance.defineRequest.apply(PageManager.sharedInstance, args);
+  }
+
   /** @see PageManager#defineTransition */
   static transition() {
     let args = Array.prototype.slice.call(arguments, 0);
@@ -246,6 +252,17 @@ class PageManager {
   }
 
   /**
+   * Look-up dictionary for request handlers.
+   *
+   * @type {Object}
+   */
+  get requests() {
+    if (this.__private__ === undefined) this.__private__ = {};
+    if (this.__private__.requests === undefined) this.__private__.requests = {};
+    return this.__private__.requests;
+  }
+
+  /**
    * Look-up dictionary for in and out transitions.
    *
    * @type {Object}
@@ -316,18 +333,29 @@ class PageManager {
                 let newPage = newDocument.getElementById(PageManager.targetElementID);
                 let n = newPage.childNodes.length;
 
-                document.title = newDocument.title;
-                document.body.className = newDocument.body.className;
+                let handler = this.lookUp(this.requests, this.currentPage, this.previousPage);
 
-                while (currPage.childNodes.length > 0)
-                  currPage.removeChild(currPage.firstChild);
+                function done() {
+                  document.title = newDocument.title;
+                  document.body.className = newDocument.body.className;
 
-                for (let i = 0; i < n; i++) {
-                  let node = document.importNode(newPage.childNodes[i], true);
-                  currPage.appendChild(node);
+                  while (currPage.childNodes.length > 0)
+                    currPage.removeChild(currPage.firstChild);
+
+                  for (let i = 0; i < n; i++) {
+                    let node = document.importNode(newPage.childNodes[i], true);
+                    currPage.appendChild(node);
+                  }
+
+                  next();
                 }
 
-                next();
+                if (handler) {
+                  handler(newDocument, document, done);
+                }
+                else {
+                  done();
+                }
               }
             });
         }
@@ -360,6 +388,68 @@ class PageManager {
    * @see {@link https://visionmedia.github.io/page.js/}
    */
   defineRoute() { page.apply(page, arguments); }
+
+  /**
+   * Defines a request handler.
+   *
+   * @param {string|Function} - The meaning of this value depends on the number
+   *                            of arguments passed into this method.
+   *                            1: This will be the handler for all page
+   *                               requests made.
+   *                            2: This will be the to path.
+   *                            3: This will be the from path.
+   * @param {string|Function} - The meaning of this value depends on the number
+   *                            of arguments passed into this method.
+   *                            2: This will be the handler for all page
+   *                               requests made.
+   *                            3: This will be the to path.
+   * @param {function} - The handler for requests made for the specific from/to
+   *                     path combo.
+   */
+  defineRequest() {
+    let arg1 = arguments[0];
+    let arg2 = arguments[1];
+    let arg3 = arguments[2];
+    let fromPath = '/*';
+    let toPath = '/*';
+    let handler = null;
+
+    switch (arguments.length) {
+      case 1:
+        if (typeof arg1 !== 'function') throw new Error(`Second argument to defineRequest() must be a function`);
+        handler = arg1;
+        break;
+      case 2:
+        if (typeof arg1 === 'string' && typeof arg2 === 'string') {
+          fromPath = arg1;
+          toPath = arg2;
+        }
+        else if (typeof arg1 === 'string' && typeof arg2 === 'function') {
+          toPath = arg1;
+          handler = arg2;
+        }
+        else {
+          throw new Error(`Expecting first argument to be a path and second argument to be either a path/function`);
+        }
+        break;
+      case 3:
+        if (typeof arg1 !== 'string') throw new Error(`First argument to defineRequest() must be a path`);
+        if (typeof arg2 !== 'string') throw new Error(`Second argument to defineRequest() must be a path`);
+        if (typeof arg3 !== 'function') throw new Error(`Third argument to defineRequest() must be a function`);
+        fromPath = arg1;
+        toPath = arg2;
+        handler = arg3;
+        break;
+      default:
+        throw new Error(`Invalid arguments passed to defineRequest(), expecting at least 1 and maximum 3 arguments`);
+    }
+
+    toPath = PageManager.normalizePath(toPath, true);
+    fromPath = PageManager.normalizePath(fromPath, true);
+
+    if (!this.requests[toPath]) this.requests[toPath] = {};
+    this.requests[toPath][fromPath] = handler;
+  }
 
   /**
    * Defines a transition (in/out).
@@ -424,7 +514,7 @@ class PageManager {
         handler = arg4;
         break;
       default:
-        throw new Error(`Invalid arguments passed to transitionOut(), expecting at least 2 and maximum 4 arguments`);
+        throw new Error(`Invalid arguments passed to defineTransition(), expecting at least 2 and maximum 4 arguments`);
     }
 
     toPath = PageManager.normalizePath(toPath, true);
@@ -489,7 +579,7 @@ class PageManager {
         handler = arg3;
         break;
       default:
-        throw new Error(`Invalid arguments passed into defineBeforeLoad()`);
+        throw new Error(`Invalid arguments passed into defineLoad()`);
     }
 
     this.initializers[state][PageManager.normalizePath(path, true)] = handler;
