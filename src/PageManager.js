@@ -1,4 +1,4 @@
-// (c) Andrew Wei
+// © Andrew Wei
 
 'use strict';
 
@@ -7,6 +7,7 @@ const page = require('page');
 const request = require('superagent');
 
 const DEFAULT_PAGE_ID = 'page';
+const DEFAULT_ROOT_PATH = '';
 
 /**
  * Singleton class for managing page routing and traisitions. Routing is based
@@ -45,6 +46,18 @@ class PageManager {
     if (typeof val !== 'string') throw new Error(`Target element ID must be a string`);
     if (PageManager.__private__ === undefined) PageManager.__private__ = {};
     PageManager.__private__.targetElementID = val;
+  }
+
+  /**
+   * Root path.
+   * 
+   * @type {string}
+   */
+  static get rootPath() { return (PageManager.__private__ && PageManager.__private__.rootPath) || DEFAULT_ROOT_PATH; }
+  static set rootPath(val) {
+    if (typeof val !== 'string') throw new Error(`Root path must be a string`);
+    if (PageManager.__private__ === undefined) PageManager.__private__ = {};
+    PageManager.__private__.rootPath = val;
   }
 
   /**
@@ -128,7 +141,7 @@ class PageManager {
   static normalizePath(path, stripLocale) {
     if (!path) return null;
 
-    let p = _.compact(path.split('/'));
+    let p = _.compact(`${this.rootPath}/${path}`.split('/'));
 
     if (stripLocale) {
       let l = PageManager.locales.slice(1);
