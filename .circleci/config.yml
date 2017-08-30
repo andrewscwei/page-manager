@@ -5,7 +5,7 @@ jobs:
   build:
     working_directory: ~/page-manager
     docker:
-      - image: node:8.4.0
+      - image: node:latest
     steps:
       - checkout
       - restore_cache:
