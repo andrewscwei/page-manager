@@ -1,4 +1,4 @@
-# page-manager ![](https://img.shields.io/maintenance/no/2017) [![Circle CI](https://circleci.com/gh/andrewscwei/page-manager/tree/master.svg?style=svg)](https://circleci.com/gh/andrewscwei/page-manager/tree/master) [![npm version](https://badge.fury.io/js/page-manager.svg)](https://badge.fury.io/js/page-manager)
+# page-manager ![](https://img.shields.io/maintenance/no/2017) [![npm](https://img.shields.io/npm/v/page-manager.svg)](https://www.npmjs.com/package/page-manager) [![CircleCI](https://img.shields.io/circleci/build/github/andrewscwei/page-manager.svg)](https://circleci.com/gh/andrewscwei/page-manager)
 
 `PageManager` is a singleton class that manages front-end routing (based on [Page.js](https://visionmedia.github.io/page.js/)), page transitions and page loading.
 
